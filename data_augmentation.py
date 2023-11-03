@@ -100,7 +100,7 @@ class DataAugmentation:
             label_path (str): The path where the label file is to be saved.
             image_width (int): The width of the image.
             image_height (int): The height of the image.
-    """
+        """
         # Open the label file for writing
         with open(label_path, 'w') as f:
             # Iterate over the augmented bounding boxes and write them to the file
