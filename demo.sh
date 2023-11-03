@@ -28,7 +28,9 @@ fi
 
 python xml2txt.py
 
-python split.py
+python dataset_preparation.py.py
+
+python data_augmentation.py
 
 python train.py
 
