@@ -29,8 +29,24 @@ class DataAugmentation:
         self.num_augmentations = num_augmentations
         # Define a sequence of augmentations
         self.seq = iaa.Sequential([
-            # Various augmentations are defined here
-        ], random_order=True)
+                    iaa.Flipud(0.5), 
+                    iaa.Fliplr(0.5),  
+                    iaa.Affine(rotate=(-25, 25)),  
+                    iaa.Multiply((0.8, 1.2)),  
+                    iaa.LinearContrast((0.75, 1.5)), 
+                    iaa.AddToHueAndSaturation((-20, 20)), 
+                    iaa.GaussianBlur(sigma=(0, 0.5)),
+                    iaa.Grayscale(alpha=(0.0, 1.0)),
+                    iaa.Resize((0.5, 1.5)),
+                    iaa.Crop(px=(0, 16)),
+                    iaa.WithColorspace(to_colorspace="HSV", from_colorspace="RGB",
+                                    children=iaa.WithChannels(0, iaa.Add((10, 50)))),
+                    iaa.SaltAndPepper(0.05),
+                    iaa.ElasticTransformation(alpha=50, sigma=5),
+                    iaa.Superpixels(p_replace=0.5, n_segments=64),
+                    iaa.Sharpen(alpha=(0, 1.0), lightness=(0.75, 1.5)),
+                    iaa.PiecewiseAffine(scale=(0.01, 0.05))
+                ], random_order=True)
 
     def augment_data(self):
         """ Performs the augmentation on the dataset. """
@@ -118,7 +134,7 @@ class DataAugmentation:
 if __name__ == '__main__':
     # Define the path to the training data and the number of augmentations per image
     train_path = 'dataset/train'
-    num_augmentations = 15
+    num_augmentations = 30
     # Initialise the DataAugmentation class
     augmenter = DataAugmentation(train_path, num_augmentations)
     # Perform the data augmentation
