@@ -28,10 +28,10 @@ fi
 
 python xml2txt.py
 
-python dataset_preparation.py.py
+python dataset_preparation.py
 
-python data_augmentation.py
+# python data_augmentation.py
 
-python train.py
+# python train.py
 
 # python inference.py
