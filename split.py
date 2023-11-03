@@ -1,9 +1,9 @@
 import os
 import random
 import shutil
-data_path='./Car-License-Plate'
-train_path='./train'
-valid_path='./valid'
+data_path='Car-License-Plate'
+train_path='dataset/train'
+valid_path='dataset/valid'
 if os.path.exists(train_path):
     shutil.rmtree(train_path)
 if os.path.exists(valid_path):

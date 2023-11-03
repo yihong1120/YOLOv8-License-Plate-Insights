@@ -1,4 +1,7 @@
-train: /train/images
-val: /valid/images
+path: /Users/YiHung/Documents/YOLOv8-License-Plate-Detection/dataset/  # dataset root dir
+train: train/images  # train images (relative to 'path')
+val: valid/images  # val images (relative to 'path')
 nc: 1
-names: ['license']
+# Classes
+names:
+  0: license
