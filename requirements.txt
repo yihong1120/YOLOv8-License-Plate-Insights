@@ -1,0 +1,9 @@
+imageio==2.31.6
+imgaug==0.4.0
+matplotlib==3.8.1
+numpy==1.26.1
+opencv_python==4.8.1.78
+opencv_python_headless==4.8.1.78
+Pillow==10.1.0
+pytesseract==0.3.10
+ultralytics==8.0.203
