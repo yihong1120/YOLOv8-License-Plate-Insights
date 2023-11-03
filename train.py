@@ -1,41 +1,98 @@
-import os
+from typing import Any, Optional
 from ultralytics import YOLO
 
 class YOLOModelHandler:
-    def __init__(self, model_name):
-        self.model_name = model_name
-        self.model = None
+    """Handles loading, training, validating, and predicting with YOLO models.
+
+    Attributes:
+        model_name (str): The name of the model file to be loaded.
+        model (YOLO, Optional): The loaded YOLO model object.
+    """
+
+    def __init__(self, model_name: str):
+        """
+        Initialises the YOLOModelHandler with a specified model.
+
+        Args:
+            model_name (str): The name of the model file (either .yaml or .pt).
+        """
+        self.model_name: str = model_name
+        self.model: Optional[YOLO] = None
         self.load_model()
 
-    def load_model(self):
+    def load_model(self) -> None:
+        """Loads the YOLO model specified by the model name."""
         if self.model_name.endswith('.yaml'):
             # Build a new model from scratch
             self.model = YOLO(self.model_name)
         elif self.model_name.endswith('.pt'):
-            # Load a pretrained model (recommended for training)
+            # Load a pre-trained model (recommended for training)
             self.model = YOLO(self.model_name)
         else:
             raise ValueError("Unsupported model format. Use '.yaml' or '.pt'")
 
-    def train_model(self, data_config, epochs):
+    def train_model(self, data_config: str, epochs: int) -> None:
+        """
+        Trains the YOLO model using the specified data configuration and for a number of epochs.
+
+        Args:
+            data_config (str): The path to the data configuration file.
+            epochs (int): The number of training epochs.
+
+        Raises:
+            RuntimeError: If the model is not loaded properly before training.
+        """
         if self.model is None:
             raise RuntimeError("The model is not loaded properly.")
         # Train the model
         self.model.train(data=data_config, epochs=epochs)
 
-    def validate_model(self):
+    def validate_model(self) -> Any:
+        """
+        Validates the YOLO model on the validation dataset.
+
+        Returns:
+            The validation results.
+
+        Raises:
+            RuntimeError: If the model is not loaded properly before validation.
+        """
         if self.model is None:
             raise RuntimeError("The model is not loaded properly.")
         # Evaluate model performance on the validation set
         return self.model.val()
 
-    def predict_image(self, image_path):
+    def predict_image(self, image_path: str) -> Any:
+        """
+        Makes a prediction using the YOLO model on the specified image.
+
+        Args:
+            image_path (str): The path to the image file for prediction.
+
+        Returns:
+            The prediction results.
+
+        Raises:
+            RuntimeError: If the model is not loaded properly before prediction.
+        """
         if self.model is None:
             raise RuntimeError("The model is not loaded properly.")
         # Predict on an image
         return self.model(image_path)
 
-    def export_model(self, export_format="onnx"):
+    def export_model(self, export_format: str = "onnx") -> str:
+        """
+        Exports the YOLO model to the specified format.
+
+        Args:
+            export_format (str): The format to export the model to.
+
+        Returns:
+            The path to the exported model file.
+
+        Raises:
+            RuntimeError: If the model is not loaded properly before exporting.
+        """
         if self.model is None:
             raise RuntimeError("The model is not loaded properly.")
         # Export the model to the desired format
@@ -43,6 +100,7 @@ class YOLOModelHandler:
 
 
 if __name__ == '__main__':
+    # Initialise the handler with a model name
     handler = YOLOModelHandler("yolov8n.pt")  # or "yolov8n.yaml"
 
     # Train the model if needed
@@ -58,5 +116,6 @@ if __name__ == '__main__':
     # Export the model to ONNX format
     onnx_path = handler.export_model(export_format="onnx")
 
+    # Output the results
     print("Prediction results:", results)
     print("ONNX model exported to:", onnx_path)
