@@ -23,27 +23,29 @@ To use this project, you'll need to install several dependencies and set up your
     git clone https://github.com/yihong1120/YOLOv8-License-Plate-Detection.git
     ```
 
-2. Navigate to the cloned directory:
+2. Download the [car license plate dataset](https://1drv.ms/u/s!AiltJg0lR4P-ylzt6zyr3s3tEpij?e=r5E9ja), the  original dataset link is [here](https://www.kaggle.com/datasets/andrewmvd/car-plate-detection?resource=download).
+
+3. Navigate to the cloned directory:
 
     ```sh
     cd YOLOv8-License-Plate-Detection
     ```
 
-3. Install the required Python libraries:
+4. Install the required Python libraries:
 
     ```sh
     pip install -r requirements.txt
     ```
 
-4. Install Tesseract-OCR. Please refer to the Tesseract documentation for installation instructions on your operating system.
+5. Install Tesseract-OCR. Please refer to the Tesseract documentation for installation instructions on your operating system.
 
-5. Install PyTesseract using pip:
+6. Install PyTesseract using pip:
 
     ```sh
     pip install pytesseract
     ```
 
-6. Make sure to add the path to the Tesseract executable to your system's PATH, or set it in your Python scripts:
+7. Make sure to add the path to the Tesseract executable to your system's PATH, or set it in your Python scripts:
 
     ```python
     pytesseract.pytesseract.tesseract_cmd = r'path_to_your_tesseract_executable'
