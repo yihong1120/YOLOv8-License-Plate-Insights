@@ -1,3 +1,4 @@
+import argparse
 import os
 import xml.etree.ElementTree as ET
 from typing import Dict
@@ -80,13 +81,31 @@ class XMLToTXTConverter:
         if not os.path.exists(directory_path):
             os.makedirs(directory_path)
 
+def parse_classes(classes_str: str) -> Dict[str, int]:
+    """
+    Parses the class string into a dictionary.
+
+    Args:
+        classes_str (str): A string containing class mappings in the 'class1=id1,class2=id2,...' format.
+
+    Returns:
+        Dict[str, int]: A dictionary mapping class names to their corresponding IDs.
+    """
+    class_pairs = classes_str.split(',')
+    return {pair.split('=')[0]: int(pair.split('=')[1]) for pair in class_pairs}
+
 
 if __name__ == '__main__':
-    # Define paths to the annotations and labels directories and class mapping
-    annotations_path: str = "./Car-License-Plate/annotations"
-    labels_path: str = "./Car-License-Plate/labels"
-    classes: Dict[str, int] = {"licence": 0}
+    parser = argparse.ArgumentParser(description='Convert XML annotations to TXT format for object detection models.')
+
+    parser.add_argument('--annotations_path', type=str, default='./Car-License-Plate/annotations', help='Directory path where the XML files are stored.')
+    parser.add_argument('--labels_path', type=str, default='./Car-License-Plate/labels', help='Output directory path where the TXT files will be saved.')
+    parser.add_argument('--classes', type=str, default='licence=0', help='Comma-separated list of class mappings in the format "class1=id1,class2=id2,...".')
+    
+    args = parser.parse_args()
+
+    classes: Dict[str, int] = parse_classes(args.classes)
 
     # Create an instance of the converter and convert all XML files to TXT format
-    converter = XMLToTXTConverter(annotations_path, labels_path, classes)
+    converter = XMLToTXTConverter(args.annotations_path, args.labels_path, classes)
     converter.convert_all()

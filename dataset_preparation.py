@@ -1,3 +1,4 @@
+import argparse
 import os
 import random
 import shutil
@@ -93,13 +94,17 @@ class DatasetPreparation:
 
 
 if __name__ == '__main__':
-    data_path = 'Car-License-Plate'
-    train_path = 'dataset/train'
-    valid_path = 'dataset/valid'
-    split_ratio = 0.8  # Adjust this ratio as needed
+    parser = argparse.ArgumentParser(description='Prepare dataset by creating a training and validation split.')
+    
+    parser.add_argument('--data_path', type=str, default='Car-License-Plate', help='Path to the data directory')
+    parser.add_argument('--train_path', type=str, default='dataset/train', help='Path to the training directory')
+    parser.add_argument('--valid_path', type=str, default='dataset/valid', help='Path to the validation directory')
+    parser.add_argument('--split_ratio', type=float, default=0.8, help='Ratio to split the training and validation data')
+
+    args = parser.parse_args()
 
     # Instantiate the class and prepare the dataset
-    dataset_preparation = DatasetPreparation(data_path, train_path, valid_path, split_ratio)
+    dataset_preparation = DatasetPreparation(args.data_path, args.train_path, args.valid_path, args.split_ratio)
     train_files, valid_files = dataset_preparation.prepare()
 
     print(f"Training files: {len(train_files)}")
