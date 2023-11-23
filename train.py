@@ -1,4 +1,5 @@
 import argparse
+import torch
 from typing import Any, Optional
 from ultralytics import YOLO
 
@@ -29,6 +30,18 @@ class YOLOModelHandler:
         elif self.model_name.endswith('.pt'):
             # Load a pre-trained model (recommended for training)
             self.model = YOLO(self.model_name)
+
+            # Check and set the device
+            if torch.backends.mps.is_available():
+                self.device = torch.device("mps")  # Use MPS if available
+            elif torch.cuda.is_available():
+                self.device = torch.device("cuda")  # Use CUDA if MPS is unavailable but CUDA is
+            else:
+                self.device = torch.device("cpu")   # Use CPU if neither MPS nor CUDA is available
+
+        # Load the model onto the specified device
+        if self.model:
+            self.model.to(self.device)
         else:
             raise ValueError("Unsupported model format. Use '.yaml' or '.pt'")
 
@@ -121,7 +134,7 @@ if __name__ == '__main__':
     metrics = handler.validate_model()
 
     # Predict on an image
-    image_url = "https://ultralytics.com/images/bus.jpg"  # 这里仍然使用固定的图片 URL
+    image_url = "https://ultralytics.com/images/bus.jpg"
     results = handler.predict_image(image_url)
 
     # Export the model to the specified format

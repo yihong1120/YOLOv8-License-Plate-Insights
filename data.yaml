@@ -1,4 +1,4 @@
-path: /Users/YiHung/Documents/YOLOv8-License-Plate-Detection/dataset/  # dataset root dir
+path: /Users/YiHung/Documents/Side_Projects/YOLOv8-License-Plate-Detection/dataset/  # dataset root dir
 train: train/images  # train images (relative to 'path')
 val: valid/images  # val images (relative to 'path')
 nc: 1
