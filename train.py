@@ -1,3 +1,4 @@
+import argparse
 from typing import Any, Optional
 from ultralytics import YOLO
 
@@ -100,22 +101,32 @@ class YOLOModelHandler:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Handle YOLO model training, validation, prediction, and exporting.')
+    
+    parser.add_argument('--data_config', type=str, default='data.yaml', help='Path to the data configuration file')
+    parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
+    parser.add_argument('--model_name', type=str, default='yolov8n.pt', help='Name of the YOLO model file')
+    parser.add_argument('--export_format', type=str, default='onnx', help='Format to export the model to')
+    parser.add_argument('--onnx_path', type=str, default=None, help='Path to save the exported ONNX model')
+
+    args = parser.parse_args()
+
     # Initialise the handler with a model name
-    handler = YOLOModelHandler("yolov8n.pt")  # or "yolov8n.yaml"
+    handler = YOLOModelHandler(args.model_name)
 
     # Train the model if needed
-    handler.train_model(data_config="data.yaml", epochs=100)
+    handler.train_model(data_config=args.data_config, epochs=args.epochs)
 
     # Validate the model
     metrics = handler.validate_model()
 
     # Predict on an image
-    image_url = "https://ultralytics.com/images/bus.jpg"
+    image_url = "https://ultralytics.com/images/bus.jpg"  # 这里仍然使用固定的图片 URL
     results = handler.predict_image(image_url)
 
-    # Export the model to ONNX format
-    onnx_path = handler.export_model(export_format="onnx")
+    # Export the model to the specified format
+    export_path = handler.export_model(export_format=args.export_format) if args.onnx_path is None else args.onnx_path
 
     # Output the results
     print("Prediction results:", results)
-    print("ONNX model exported to:", onnx_path)
+    print(f"{args.export_format.upper()} model exported to:", export_path)

@@ -5,6 +5,8 @@ import imageio.v2 as imageio
 import imgaug as ia
 from imgaug.augmentables.bbs import BoundingBox, BoundingBoxesOnImage
 import imgaug.augmenters as iaa
+import argparse
+from tqdm import tqdm
 
 
 class DataAugmentation:
@@ -52,7 +54,8 @@ class DataAugmentation:
         """ Performs the augmentation on the dataset. """
         image_paths = glob.glob(os.path.join(self.train_path, 'images', '*.png'))
 
-        for image_path in image_paths:
+        # Encapsulate the image_paths loop to display a progress bar
+        for image_path in tqdm(image_paths, desc="Augmenting Images"):
             image = imageio.imread(image_path)
             # Replace 'images' with 'labels' in the path and change file extension to read labels
             label_path = image_path.replace('images', 'labels').replace('.png', '.txt')
@@ -132,9 +135,20 @@ class DataAugmentation:
 
 
 if __name__ == '__main__':
-    # Define the path to the training data and the number of augmentations per image
-    train_path = 'dataset/train'
-    num_augmentations = 30
+    # Create a parser
+    parser = argparse.ArgumentParser(description='Perform data augmentation on image datasets.')
+    # Add train_path argument with a default value
+    parser.add_argument('--train_path', type=str, default='dataset/train', help='Path to the training data')
+    # Add num_augmentations argument with a default value
+    parser.add_argument('--num_augmentations', type=int, default=30, help='Number of augmentations per image')
+
+    # Parse the command line arguments
+    args = parser.parse_args()
+
+    # Use the parsed arguments
+    train_path = args.train_path
+    num_augmentations = args.num_augmentations
+
     # Initialise the DataAugmentation class
     augmenter = DataAugmentation(train_path, num_augmentations)
     # Perform the data augmentation
