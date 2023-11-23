@@ -129,6 +129,10 @@ class DataAugmentation:
                 y_center = ((bb.y1 + bb.y2) / 2) / image_height
                 width = (bb.x2 - bb.x1) / image_width
                 height = (bb.y2 - bb.y1) / image_height
+
+                # Ensure all values are within [0, 1]
+                x_center, y_center, width, height = [max(0, min(1, val)) for val in [x_center, y_center, width, height]]
+
                 class_index = bb.label
                 # Write the bounding box information in the YOLO format
                 f.write(f"{class_index} {x_center} {y_center} {width} {height}\n")
