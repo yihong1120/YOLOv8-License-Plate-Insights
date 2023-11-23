@@ -2,6 +2,8 @@ import argparse
 import os
 import xml.etree.ElementTree as ET
 from typing import Dict
+from tqdm import tqdm
+
 
 class XMLToTXTConverter:
     """
@@ -66,7 +68,9 @@ class XMLToTXTConverter:
         Converts all XML annotation files found in the annotations_path to TXT format.
         """
         self.create_directory(self.labels_path)
-        for annotation in os.listdir(self.annotations_path):
+        # 获取所有注释文件并使用tqdm进行迭代
+        annotation_files = os.listdir(self.annotations_path)
+        for annotation in tqdm(annotation_files, desc="Converting XML to TXT"):
             annotation_file: str = os.path.join(self.annotations_path, annotation)
             self.convert_annotation(annotation_file)
 

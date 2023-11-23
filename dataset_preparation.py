@@ -3,6 +3,8 @@ import os
 import random
 import shutil
 from typing import Tuple, List
+from tqdm import tqdm
+
 
 class DatasetPreparation:
     """
@@ -59,7 +61,7 @@ class DatasetPreparation:
             if os.path.exists(source):
                 shutil.copy(source, target)
             else:
-                print(f"Warning: {source} does not exist.")
+                print(f"Warning: {source} does not exist. Check if the file is missing or the file naming is incorrect.")
 
     def prepare(self) -> Tuple[List[str], List[str]]:
         """
@@ -84,11 +86,19 @@ class DatasetPreparation:
         train_files = files[:split_point]
         valid_files = files[split_point:]
 
-        # Copy files to the corresponding directories
-        self.copy_data(train_files, os.path.join(self.data_path, "images"), os.path.join(self.train_path, "images"), '.png')
-        self.copy_data(train_files, os.path.join(self.data_path, "labels"), os.path.join(self.train_path, "labels"), '.txt')
-        self.copy_data(valid_files, os.path.join(self.data_path, "images"), os.path.join(self.valid_path, "images"), '.png')
-        self.copy_data(valid_files, os.path.join(self.data_path, "labels"), os.path.join(self.valid_path, "labels"), '.txt')
+        # Copy image files to the corresponding directories with progress bar
+        image_source_dir = os.path.join(self.data_path, "images")
+        label_source_dir = os.path.join(self.data_path, "labels")
+
+        for file_set, storage_path, file_type in [
+            (train_files, os.path.join(self.train_path, "images"), '.png'),
+            (train_files, os.path.join(self.train_path, "labels"), '.txt'),
+            (valid_files, os.path.join(self.valid_path, "images"), '.png'),
+            (valid_files, os.path.join(self.valid_path, "labels"), '.txt')
+        ]:
+            for file in tqdm(file_set, desc=f"Copying files to {storage_path}"):
+                source_dir = image_source_dir if file_type == '.png' else label_source_dir
+                self.copy_data([file], source_dir, storage_path, file_type)
 
         return train_files, valid_files
 
