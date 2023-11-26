@@ -104,4 +104,4 @@ This project is open-sourced under the MIT License. See the [LICENSE](./LICENSE)
 
 ## Acknowledgements
 
-- The YOLOv8 model and implementation are from Ultralytics. Visit their [GitHub repository](https://github.com/ultralytics/yolov8) for more information.
+- The YOLOv8 model and implementation are from Ultralytics. Visit their [GitHub repository](https://github.com/ultralytics/ultralytics) for more information.
