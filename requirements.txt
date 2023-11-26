@@ -6,5 +6,5 @@ numpy==1.26.1
 opencv_python==4.8.1.78
 opencv_python_headless==4.8.1.78
 Pillow==10.1.0
-pytesseract==0.3.10
+google-cloud-vision==3.4.5
 ultralytics==8.0.203
