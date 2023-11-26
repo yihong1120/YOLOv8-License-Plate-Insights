@@ -144,7 +144,7 @@ if __name__ == '__main__':
     # Add train_path argument with a default value
     parser.add_argument('--train_path', type=str, default='dataset/train', help='Path to the training data')
     # Add num_augmentations argument with a default value
-    parser.add_argument('--num_augmentations', type=int, default=30, help='Number of augmentations per image')
+    parser.add_argument('--num_augmentations', type=int, default=5, help='Number of augmentations per image')
 
     # Parse the command line arguments
     args = parser.parse_args()

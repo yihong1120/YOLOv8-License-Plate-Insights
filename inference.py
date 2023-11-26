@@ -26,7 +26,7 @@ class CarLicensePlateDetector:
 
     def recognize_license_plate(self, img_path: str) -> np.ndarray:
         """
-        Recognizes the license plate in an image.
+        Recognizes the license plate in an image and draws a rectangle around it.
 
         Args:
             img_path (str): The path to the image file containing the car.
@@ -39,10 +39,17 @@ class CarLicensePlateDetector:
         boxes = results[0].boxes.xyxy
         for box in boxes:
             x1, y1, x2, y2 = map(int, box[:4])
+
+            # Extract license plate text from the ROI
+            roi = img[y1:y2, x1:x2]
+            license_plate = self.extract_license_plate_text(roi)
+
+            # Draw a rectangle around the license plate
             cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            license_plate = self.extract_license_plate_text(img[y1:y2, x1:x2])
+
             print(f"License: {license_plate}")
             img = self.draw_text(img, license_plate, (x1, y1 - 20))
+
         return img
 
     @staticmethod
@@ -81,7 +88,7 @@ class CarLicensePlateDetector:
     @staticmethod
     def extract_license_plate_text(roi: np.ndarray) -> str:
         """
-        Extracts the text from a region of interest (ROI) in an image using OCR.
+        Extracts the text from a region of interest (ROI) in an image using OCR without converting to grayscale.
 
         Args:
             roi (np.ndarray): The region of interest in the image where the license plate is located.
@@ -89,34 +96,36 @@ class CarLicensePlateDetector:
         Returns:
             str: The recognized text from the license plate.
         """
-        gray_roi = cv2.cvtColor(roi, cv2.COLOR_RGB2GRAY)
-        license_plate = pytesseract.image_to_string(gray_roi, lang='eng', config='--psm 11')
+        save_path = "test_car.jpg"
+        cv2.imwrite(save_path, cv2.cvtColor(roi, cv2.COLOR_RGB2BGR))
+        # Directly using the ROI without converting it to grayscale
+        license_plate = pytesseract.image_to_string(roi, lang='eng', config='--psm 11')
         return license_plate.strip()
+
 
     def display_and_save(self, imgs: List[np.ndarray], save_path: str = "yolov8_car.jpg") -> None:
         """
-        Displays and saves a list of images.
+        Displays and saves a list of images without altering their size.
 
         Args:
             imgs (List[np.ndarray]): A list of images to be displayed and saved.
             save_path (str): The file path where the image will be saved.
         """
-        plt.figure(figsize=(12, 9))
         for i, img in enumerate(imgs):
-            plt.subplot(2, 3, i + 1)
+            plt.subplot(1, len(imgs), i + 1)
             plt.axis("off")
             plt.imshow(img)
-        plt.savefig(save_path)
+        plt.savefig(save_path, bbox_inches='tight')
 
 
 if __name__ == '__main__':
     # Path to YOLO model weights
-    weights_path: str = './runs/detect/train/weights/best.pt'
+    weights_path: str = 'best.pt'
     # Instantiate the detector with the given weights
     detector = CarLicensePlateDetector(weights_path)
 
     # Image path for the car with the license plate to be recognized
-    img_path: str = './car.png'  # Replace with the path to your image
+    img_path: str = './car.jpg'  # Replace with the path to your image
     # Recognize the license plate in the image
     recognized_img = detector.recognize_license_plate(img_path)
 
