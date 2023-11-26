@@ -12,7 +12,6 @@ To use this project, you'll need to install several dependencies and set up your
 - PyTorch (with CUDA support for GPU acceleration)
 - Ultralytics YOLOv8 library
 - OpenCV
-- PyTesseract
 - Tesseract-OCR Engine
 
 ### Installation
@@ -37,15 +36,13 @@ To use this project, you'll need to install several dependencies and set up your
     pip install -r requirements.txt
     ```
 
-5. Install Tesseract-OCR. Please refer to the Tesseract documentation for installation instructions on your operating system.
-
-6. Install PyTesseract using pip:
+5. Install PyTesseract using pip:
 
     ```sh
     pip install pytesseract
     ```
 
-7. Make sure to add the path to the Tesseract executable to your system's PATH, or set it in your Python scripts:
+6. Make sure to add the path to the Tesseract executable to your system's PATH, or set it in your Python scripts:
 
     ```python
     pytesseract.pytesseract.tesseract_cmd = r'path_to_your_tesseract_executable'
@@ -67,7 +64,12 @@ To use this model for license plate detection and recognition, you need to have 
     python CarLicensePlateDetector.py
     ```
 
-3. Results will be displayed and can be saved as images with the recognized license plates highlighted.
+3. Results will be displayed and can be saved as images with the recognized license plates highlighted, the following is the message returned after execution.
+    ```
+    0: 480x640 1 license, 177.7ms
+    Speed: 4.2ms preprocess, 177.7ms inference, 2.0ms postprocess per image at shape (1, 3, 480, 640)
+    License: 189-16
+    ```
 
 ## Custom Training
 
@@ -88,6 +90,21 @@ If you wish to train your own YOLOv8 model on custom license plate data, you'll 
 
 4. After training, you can find the best performing weights in the `runs/train/exp*/weights` directory.
 
+## Experiment
+
+we set up an test with the parameters:
+- num_augmentations = 5
+- epochs = 100
+- model_name = yolov8n.pt
+
+![train_output](./images/train_output.png)
+
+1. `Confusion Matrix Normalized`: This chart shows the normalized results of the model's predictions. The strong diagonal entries (0.95 for 'license' and 1.00 for 'background') indicate that the model is performing very well, with high true positive rates and low false negatives and false positives.
+
+2. `Precision-Recall Curve`: This curve is used to evaluate the performance of the object detection model at different thresholds. The high area under the curve (AUC) of 0.928 is excellent, suggesting that the model is able to differentiate between the 'license' class and all other classes with high precision and recall.
+
+3. `F1-Confidence Curve`: This curve represents the F1 score (a harmonic mean of precision and recall) across various confidence thresholds. The peak F1 score of 0.90 at a confidence threshold of 0.408 indicates that at this threshold, the model achieves a good balance between precision and recall.
+
 ## Contributions
 
 Contributions to this project are welcome. Please submit a pull request or create an issue if you have ideas for improvements or have found a bug.
@@ -99,4 +116,3 @@ This project is open-sourced under the MIT License. See the [LICENSE](./LICENSE)
 ## Acknowledgements
 
 - The YOLOv8 model and implementation are from Ultralytics. Visit their [GitHub repository](https://github.com/ultralytics/yolov8) for more information.
-- Tesseract-OCR is developed by Google. Visit the [Tesseract GitHub repository](https://github.com/tesseract-ocr/tesseract) for more details.
