@@ -111,6 +111,18 @@ class YOLOModelHandler:
             raise RuntimeError("The model is not loaded properly.")
         # Export the model to the desired format
         return self.model.export(format=export_format)
+    
+    def save_model(self, save_path: str) -> None:
+        """
+        Saves the YOLO model to a .pt file.
+
+        Args:
+            save_path (str): The path to save the .pt model file.
+        """
+        if self.model is None:
+            raise RuntimeError("The model is not loaded properly.")
+        # Save the model to the specified path
+        torch.save(self.model.state_dict(), save_path)
 
 
 if __name__ == '__main__':
@@ -121,25 +133,22 @@ if __name__ == '__main__':
     parser.add_argument('--model_name', type=str, default='yolov8n.pt', help='Name of the YOLO model file')
     parser.add_argument('--export_format', type=str, default='onnx', help='Format to export the model to')
     parser.add_argument('--onnx_path', type=str, default=None, help='Path to save the exported ONNX model')
+    parser.add_argument('--pt_path', type=str, default='model.pt', help='Path to save the trained model in .pt format')
 
     args = parser.parse_args()
 
-    # Initialise the handler with a model name
     handler = YOLOModelHandler(args.model_name)
 
-    # Train the model if needed
-    handler.train_model(data_config=args.data_config, epochs=args.epochs)
+    try:
+        handler.train_model(data_config=args.data_config, epochs=args.epochs)
+        metrics = handler.validate_model()
+        results = handler.predict_image("https://ultralytics.com/images/bus.jpg")
+        export_path = handler.export_model(export_format=args.export_format) if args.onnx_path is None else args.onnx_path
+        handler.save_model(args.pt_path)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        exit(1)
 
-    # Validate the model
-    metrics = handler.validate_model()
-
-    # Predict on an image
-    image_url = "https://ultralytics.com/images/bus.jpg"
-    results = handler.predict_image(image_url)
-
-    # Export the model to the specified format
-    export_path = handler.export_model(export_format=args.export_format) if args.onnx_path is None else args.onnx_path
-
-    # Output the results
     print("Prediction results:", results)
     print(f"{args.export_format.upper()} model exported to:", export_path)
+    print(f"Model saved to: {args.pt_path}")
