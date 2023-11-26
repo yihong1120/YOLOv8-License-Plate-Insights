@@ -12,7 +12,6 @@ To use this project, you'll need to install several dependencies and set up your
 - PyTorch (with CUDA support for GPU acceleration)
 - Ultralytics YOLOv8 library
 - OpenCV
-- Tesseract-OCR Engine
 
 ### Installation
 
@@ -36,18 +35,6 @@ To use this project, you'll need to install several dependencies and set up your
     pip install -r requirements.txt
     ```
 
-5. Install PyTesseract using pip:
-
-    ```sh
-    pip install pytesseract
-    ```
-
-6. Make sure to add the path to the Tesseract executable to your system's PATH, or set it in your Python scripts:
-
-    ```python
-    pytesseract.pytesseract.tesseract_cmd = r'path_to_your_tesseract_executable'
-    ```
-
 ## Usage
 
 To use this model for license plate detection and recognition, you need to have images of cars on which you want to perform the detection.
@@ -61,7 +48,7 @@ To use this model for license plate detection and recognition, you need to have 
 2. Run the license plate detection script:
 
     ```sh
-    python CarLicensePlateDetector.py
+    python inference.py
     ```
 
 3. Results will be displayed and can be saved as images with the recognized license plates highlighted, the following is the message returned after execution.
