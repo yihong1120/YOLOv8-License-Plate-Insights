@@ -9,7 +9,7 @@ To use this project, you'll need to install several dependencies and set up your
 ### Prerequisites
 
 - Python 3.8 or higher
-- PyTorch (with CUDA support for GPU acceleration)
+- PyTorch (with MPS or CUDA support for GPU acceleration)
 - Ultralytics YOLOv8 library
 - OpenCV
 
