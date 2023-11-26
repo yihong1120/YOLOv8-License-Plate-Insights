@@ -126,7 +126,7 @@ class CarLicensePlateDetector:
             return ""
 
 
-    def display_and_save(self, imgs: List[np.ndarray], save_path: str = "yolov8_car.jpg") -> None:
+    def display_and_save(self, imgs: List[np.ndarray], save_path: str = "images/yolov8_car.jpg") -> None:
         """
         Displays and saves a list of images without altering their size.
 
@@ -148,7 +148,7 @@ if __name__ == '__main__':
     detector = CarLicensePlateDetector(weights_path)
 
     # Image path for the car with the license plate to be recognized
-    img_path: str = './car.jpg'  # Replace with the path to your image
+    img_path: str = './images/car.jpg'  # Replace with the path to your image
     # Recognize the license plate in the image
     recognized_img = detector.recognize_license_plate(img_path)
 
