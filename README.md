@@ -1,8 +1,6 @@
 # YOLOv8-License-Plate-Detection
 
-This repository presents an implementation of license plate recognition using the YOLOv8 object detection algorithm, demonstrating the capabilities of the YOLO architecture for real-world applications such as vehicle identification and traffic monitoring.
-
-The project has been enhanced with the integration of Google Cloud Platform (GCP) Vision AI for performing Optical Character Recognition (OCR) to identify license plate numbers. This modification aligns the project theme and content with a focus on British English writing style.
+This repository showcases an implementation of license plate recognition leveraging the YOLOv8 object detection algorithm. It aims to highlight the versatility of the YOLO architecture in addressing real-world scenarios like vehicle identification and traffic monitoring. Furthermore, the project has been augmented by integrating Google Cloud Platform (GCP) Vision AI for the purpose of Optical Character Recognition (OCR), enabling the accurate identification of license plate numbers. This adaptation not only extends the project's capabilities but also aligns its theme and content with an emphasis on British English writing style.
 
 ## Setup
 
