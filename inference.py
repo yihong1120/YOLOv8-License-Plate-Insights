@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw
 from ultralytics import YOLO
 import matplotlib.pyplot as plt
 from typing import List, Tuple
+from google.cloud import vision
 
 class CarLicensePlateDetector:
     """
@@ -88,7 +89,7 @@ class CarLicensePlateDetector:
     @staticmethod
     def extract_license_plate_text(roi: np.ndarray) -> str:
         """
-        Extracts the text from a region of interest (ROI) in an image using OCR without converting to grayscale.
+        Extracts the text from a region of interest (ROI) in an image using Google Cloud Vision API.
 
         Args:
             roi (np.ndarray): The region of interest in the image where the license plate is located.
@@ -96,11 +97,33 @@ class CarLicensePlateDetector:
         Returns:
             str: The recognized text from the license plate.
         """
-        save_path = "test_car.jpg"
-        cv2.imwrite(save_path, cv2.cvtColor(roi, cv2.COLOR_RGB2BGR))
-        # Directly using the ROI without converting it to grayscale
-        license_plate = pytesseract.image_to_string(roi, lang='eng', config='--psm 11')
-        return license_plate.strip()
+        # Convert the ROI to bytes for the Vision API
+        _, encoded_image = cv2.imencode('.jpg', roi)
+        roi_bytes = encoded_image.tobytes()
+
+        # Initialize the Google Cloud Vision client
+        client = vision.ImageAnnotatorClient()
+
+        # Prepare the image for the Vision API
+        image = vision.Image(content=roi_bytes)
+
+        # Perform text detection
+        response = client.text_detection(image=image)
+
+        # In case of errors
+        if response.error.message:
+            raise Exception(
+                "{}\nFor more info on error messages, check: "
+                "https://cloud.google.com/apis/design/errors".format(response.error.message)
+            )
+
+        # Extract and return the recognized text
+        texts = response.text_annotations
+        if texts:
+            recognized_text = texts[0].description.strip()  # The first annotation contains the full detected text
+            return recognized_text
+        else:
+            return ""
 
 
     def display_and_save(self, imgs: List[np.ndarray], save_path: str = "yolov8_car.jpg") -> None:
@@ -120,7 +143,7 @@ class CarLicensePlateDetector:
 
 if __name__ == '__main__':
     # Path to YOLO model weights
-    weights_path: str = 'best.pt'
+    weights_path: str = 'models/best.pt'
     # Instantiate the detector with the given weights
     detector = CarLicensePlateDetector(weights_path)
 
