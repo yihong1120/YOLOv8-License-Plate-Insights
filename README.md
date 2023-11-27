@@ -84,7 +84,7 @@ we set up an test with the parameters:
 - epochs = 100
 - model_name = yolov8n.pt
 
-![train_output](./media/train_output.png)
+![train_output](./medias/train_output.png)
 
 1. `Confusion Matrix Normalized`: This chart shows the normalized results of the model's predictions. The strong diagonal entries (0.95 for 'license' and 1.00 for 'background') indicate that the model is performing very well, with high true positive rates and low false negatives and false positives.
 
