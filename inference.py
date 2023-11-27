@@ -141,22 +141,64 @@ class CarLicensePlateDetector:
         plt.savefig(save_path, bbox_inches='tight')
 
 
+    def process_video(self, video_path: str, output_path: str) -> None:
+        """
+        Processes a video file to detect and recognize license plates in each frame.
+
+        Args:
+            video_path (str): The path to the video file.
+            output_path (str): The path where the output video will be saved.
+        """
+        cap = cv2.VideoCapture(video_path)
+        if not cap.isOpened():
+            raise IOError("Error opening video file")
+
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(output_path, fourcc, 30.0, 
+                              (int(cap.get(3)), int(cap.get(4))))
+
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if ret:
+                # Process the frame
+                annotated_frame = self.recognize_license_plate(frame)
+                # Write the frame
+                out.write(cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR))
+            else:
+                break
+
+        # Release everything when done
+        cap.release()
+        out.release()
+        cv2.destroyAllWindows()
+
+
+# [The rest of the class code remains unchanged] ...
+
 if __name__ == '__main__':
     # Path to YOLO model weights
     weights_path: str = 'models/best.pt'
     # Instantiate the detector with the given weights
     detector = CarLicensePlateDetector(weights_path)
 
-    # Image path for the car with the license plate to be recognized
-    img_path: str = './images/car.jpg'  # Replace with the path to your image
-    # Recognize the license plate in the image
-    recognized_img = detector.recognize_license_plate(img_path)
+    # Decide whether to process an image or a video
+    media_path: str = './media/car.jpg'  # Replace with the path to your image or video
+    output_path: str = './media/yolov8_car.jpg'  # Replace with your output path, without file extension
 
-    # Display and save the result as a single image
-    detector.display_and_save([recognized_img])
+    if media_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+        # Recognize the license plate in the image
+        recognized_img = detector.recognize_license_plate(media_path)
+        # Save the result as a single image
+        image_output_path = f"{output_path}.jpg"
+        cv2.imwrite(image_output_path, cv2.cvtColor(recognized_img, cv2.COLOR_RGB2BGR))
+        print(f"Annotated image saved to {image_output_path}")
 
-    # Note: If you wish to run inference on multiple images, you can uncomment the following lines:
-    # img_dir = "./valid/images"  # Directory containing images
-    # processed_imgs = [detector.recognize_license_plate(os.path.join(img_dir, file))
-    #                   for file in os.listdir(img_dir)[:6]]  # Adjust slice as needed
-    # detector.display_and_save(processed_imgs)
+    elif media_path.lower().endswith(('.mp4', '.mov', '.avi')):
+        # Process the video
+        video_output_path = f"{output_path}.mp4"
+        detector.process_video(media_path, video_output_path)
+        print(f"Processed video saved to {video_output_path}")
+
+    else:
+        print("Unsupported media format")
