@@ -59,9 +59,12 @@ To use this model for license plate detection and recognition, you need to have 
 
 3. Results will be displayed and can be saved as images with the recognised license plates highlighted, the following is the message returned after execution.
     ```
-    0: 480x640 1 license, 177.7ms
-    Speed: 4.2ms preprocess, 177.7ms inference, 2.0ms postprocess per image at shape (1, 3, 480, 640)
-    License: 189-16
+    {'DateTime': '2023:11:17 19:01:29', 'GPSLatitude': 24.15218611111111, 'GPSLongitude': 120.67495555555556}
+
+    0: 384x640 1 license, 196.7ms
+    Speed: 6.6ms preprocess, 196.7ms inference, 16.4ms postprocess per image at shape (1, 3, 384, 640)
+    License: NNG 9569
+    Saved the image with the license plate to ./medias/yolov8_Scooter.jpg
     ```
 
 ## Custom Training
@@ -97,10 +100,6 @@ We conducted an experiment with the following parameters:
 2. `Precision-Recall Curve`: This curve is used to evaluate the performance of the object detection model at different thresholds. The high area under the curve (AUC) of 0.928 is excellent, suggesting that the model is able to differentiate between the 'license' class and all other classes with high precision and recall.
 
 3. `F1-Confidence Curve`: This curve represents the F1 score (a harmonic mean of precision and recall) across various confidence thresholds. The peak F1 score of 0.90 at a confidence threshold of 0.408 indicates that at this threshold, the model achieves a good balance between precision and recall.
-
-## Contributions
-
-Contributions to this project are welcome. Please submit a pull request or create an issue if you have ideas for improvements or have found a bug.
 
 ## License
 
