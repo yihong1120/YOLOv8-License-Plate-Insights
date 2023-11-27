@@ -1,6 +1,12 @@
-# YOLOv8-License-Plate-Detection
+# YOLOv8-License-Plate-Insights
 
-This repository showcases an implementation of license plate recognition leveraging the YOLOv8 object detection algorithm. It aims to highlight the versatility of the YOLO architecture in addressing real-world scenarios like vehicle identification and traffic monitoring. Furthermore, the project has been augmented by integrating Google Cloud Platform (GCP) Vision AI for the purpose of Optical Character Recognition (OCR), enabling the accurate identification of license plate numbers.
+This repository demonstrates license plate recognition using the YOLOv8 object detection algorithm, showcasing the versatility of the YOLO architecture in real-world scenarios such as vehicle identification, traffic monitoring, and geospatial analysis. Additionally, the project integrates Google Cloud Platform (GCP) Vision AI for Optical Character Recognition (OCR), enabling accurate license plate identification while capturing crucial media capture data, including date, time, and geolocation. This metadata extraction enhances data understanding and supports applications like traffic analysis and location-based analytics.
+
+## Features
+
+* `License Plate Recognition`: Utilising YOLOv8, the project excels at identifying and extracting license plate numbers from images and videos.
+
+* `Media Capture Data`: Beyond license plate information, the project now retrieves essential media capture data, including the date, time, and geographical coordinates (latitude and longitude). This data enriches the analysis and extends the project's usability to various real-world applications.
 
 ## Setup
 
@@ -51,7 +57,7 @@ To use this model for license plate detection and recognition, you need to have 
     python inference.py
     ```
 
-3. Results will be displayed and can be saved as images with the recognized license plates highlighted, the following is the message returned after execution.
+3. Results will be displayed and can be saved as images with the recognised license plates highlighted, the following is the message returned after execution.
     ```
     0: 480x640 1 license, 177.7ms
     Speed: 4.2ms preprocess, 177.7ms inference, 2.0ms postprocess per image at shape (1, 3, 480, 640)
@@ -79,14 +85,14 @@ If you wish to train your own YOLOv8 model on custom license plate data, you'll 
 
 ## Experiment
 
-we set up an test with the parameters:
+We conducted an experiment with the following parameters:
 - num_augmentations = 5
 - epochs = 100
 - model_name = yolov8n.pt
 
 ![train_output](./medias/train_output.png)
 
-1. `Confusion Matrix Normalized`: This chart shows the normalized results of the model's predictions. The strong diagonal entries (0.95 for 'license' and 1.00 for 'background') indicate that the model is performing very well, with high true positive rates and low false negatives and false positives.
+1. `Confusion Matrix Normalized`: This chart shows the normalised results of the model's predictions. The strong diagonal entries (0.95 for 'license' and 1.00 for 'background') indicate that the model is performing very well, with high true positive rates and low false negatives and false positives.
 
 2. `Precision-Recall Curve`: This curve is used to evaluate the performance of the object detection model at different thresholds. The high area under the curve (AUC) of 0.928 is excellent, suggesting that the model is able to differentiate between the 'license' class and all other classes with high precision and recall.
 
