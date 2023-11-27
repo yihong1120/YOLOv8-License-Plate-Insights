@@ -1,12 +1,18 @@
 import os
 import cv2
 import numpy as np
-import pytesseract
 from PIL import Image, ImageDraw
 from ultralytics import YOLO
 import matplotlib.pyplot as plt
-from typing import List, Tuple
+from typing import List, Tuple, Union, Dict, Any
 from google.cloud import vision
+from PIL.ExifTags import TAGS
+from typing import Tuple, List, Any
+import exifread
+from hachoir.parser import createParser
+from hachoir.metadata import extractMetadata
+from fractions import Fraction
+
 
 class CarLicensePlateDetector:
     """
@@ -38,6 +44,8 @@ class CarLicensePlateDetector:
         img = self.load_image(img_path)
         results = self.model.predict(img, save=False)
         boxes = results[0].boxes.xyxy
+        recognized_text = None
+
         for box in boxes:
             x1, y1, x2, y2 = map(int, box[:4])
 
@@ -45,11 +53,17 @@ class CarLicensePlateDetector:
             roi = img[y1:y2, x1:x2]
             license_plate = self.extract_license_plate_text(roi)
 
+            # If license plate text is not empty, update recognized_text
+            if license_plate:
+                recognized_text = license_plate
+
             # Draw a rectangle around the license plate
             cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-            print(f"License: {license_plate}")
-            img = self.draw_text(img, license_plate, (x1, y1 - 20))
+        # Print recognized text if available
+        if recognized_text:
+            print(f"License: {recognized_text}")
+            img = self.draw_text(img, recognized_text, (x1, y1 - 20))
 
         return img
 
@@ -125,7 +139,6 @@ class CarLicensePlateDetector:
         else:
             return ""
 
-
     def display_and_save(self, imgs: List[np.ndarray], save_path: str = "images/yolov8_car.jpg") -> None:
         """
         Displays and saves a list of images without altering their size.
@@ -139,7 +152,6 @@ class CarLicensePlateDetector:
             plt.axis("off")
             plt.imshow(img)
         plt.savefig(save_path, bbox_inches='tight')
-
 
     def process_video(self, video_path: str, output_path: str) -> None:
         """
@@ -155,8 +167,8 @@ class CarLicensePlateDetector:
 
         # Define the codec and create VideoWriter object
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(output_path, fourcc, 30.0, 
-                              (int(cap.get(3)), int(cap.get(4))))
+        out = cv2.VideoWriter(output_path, fourcc, 30.0,
+                             (int(cap.get(3)), int(cap.get(4))))
 
         while cap.isOpened():
             ret, frame = cap.read()
@@ -173,32 +185,159 @@ class CarLicensePlateDetector:
         out.release()
         cv2.destroyAllWindows()
 
+    def get_media_info(self, file_path: str) -> Union[str, Dict[str, Any]]:
+        """
+        Get media information from a file.
 
-# [The rest of the class code remains unchanged] ...
+        Args:
+            file_path (str): The path to the media file.
+
+        Returns:
+            Union[str, Dict[str, Any]]: A dictionary containing media information or an error message.
+
+        Raises:
+            Exception: If an error occurs while reading the file.
+        """
+        if file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+            return self.get_image_info(file_path)
+        elif file_path.lower().endswith(('.mp4', '.mov', '.avi')):
+            return self.get_video_info(file_path)
+        else:
+            return "Unsupported file format"
+
+    def get_image_info(self, file_path: str) -> Dict[str, Any]:
+        """
+        Get information from an image file.
+
+        Args:
+            file_path (str): The path to the image file.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing image information.
+
+        Raises:
+            Exception: If an error occurs while reading the image data.
+        """
+        try:
+            image = Image.open(file_path)
+            raw_exif_data = image._getexif()
+
+            if raw_exif_data is None:
+                return {"Error": "No EXIF data found in the image."}
+
+            exif_data = {
+                TAGS[key]: value
+                for key, value in raw_exif_data.items()
+                if key in TAGS and value
+            }
+            datetime = exif_data.get('DateTime', 'Unknown')
+            gps_info = self.extract_gps_data(file_path)
+            return {'DateTime': datetime, **gps_info}
+        except Exception as e:
+            return f"Error reading image data: {e}"
+
+    def extract_gps_data(self, file_path: str) -> Dict[str, Any]:
+        """
+        Extract GPS data from an image file.
+
+        Args:
+            file_path (str): The path to the image file.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing GPS information.
+
+        Raises:
+            Exception: If an error occurs while extracting GPS data.
+        """
+        with open(file_path, 'rb') as f:
+            tags = exifread.process_file(f)
+        gps_info = {}
+        for tag in tags.keys():
+            if tag.startswith("GPS"):
+                gps_info[tag] = tags[tag]
+        return self.parse_gps_info(gps_info)
+
+    def parse_gps_info(self, gps_info: Dict[str, Any]) -> Dict[str, float]:
+        """
+        Parse GPS information from a dictionary.
+
+        Args:
+            gps_info (Dict[str, Any]): A dictionary containing GPS information.
+
+        Returns:
+            Dict[str, float]: A dictionary containing parsed GPS information.
+
+        Raises:
+            Exception: If an error occurs while parsing GPS data.
+        """
+        gps_data = {}
+        if 'GPS GPSLatitude' in gps_info and 'GPS GPSLatitudeRef' in gps_info:
+            gps_data['GPSLatitude'] = self.convert_to_degrees(gps_info['GPS GPSLatitude'].values)
+            if gps_info['GPS GPSLatitudeRef'].printable != 'N':
+                gps_data['GPSLatitude'] = -gps_data['GPSLatitude']
+        if 'GPS GPSLongitude' in gps_info and 'GPS GPSLongitudeRef' in gps_info:
+            gps_data['GPSLongitude'] = self.convert_to_degrees(gps_info['GPS GPSLongitude'].values)
+            if gps_info['GPS GPSLongitudeRef'].printable != 'E':
+                gps_data['GPSLongitude'] = -gps_data['GPSLongitude']
+        return gps_data
+
+    def convert_to_degrees(self, value: Tuple[int, int, int]) -> float:
+        """
+        Convert GPS coordinate values to degrees.
+
+        Args:
+            value (Tuple[int, int, int]): A tuple containing degrees, minutes, and seconds.
+
+        Returns:
+            float: The coordinate value in degrees.
+        """
+        d, m, s = value
+        d = float(d.numerator) / float(d.denominator)
+        m = float(m.numerator) / float(m.denominator)
+        s = float(s.numerator) / float(s.denominator)
+        return d + (m / 60.0) + (s / 3600.0)
+
+    def get_video_info(self, file_path: str) -> Dict[str, Any]:
+        """
+        Get information from a video file.
+
+        Args:
+            file_path (str): The path to the video file.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing video information or an error message.
+
+        Raises:
+            Exception: If an error occurs while reading the video data.
+        """
+        try:
+            parser = createParser(file_path)
+            if not parser:
+                return "Unable to parse video file"
+            with parser:
+                metadata = extractMetadata(parser)
+            return metadata.exportDictionary() if metadata else "No metadata found in video"
+        except Exception as e:
+            return f"Error reading video data: {e}"
+
 
 if __name__ == '__main__':
-    # Path to YOLO model weights
     weights_path: str = 'models/best.pt'
-    # Instantiate the detector with the given weights
     detector = CarLicensePlateDetector(weights_path)
 
-    # Decide whether to process an image or a video
-    media_path: str = './media/car.jpg'  # Replace with the path to your image or video
-    output_path: str = './media/yolov8_car.jpg'  # Replace with your output path, without file extension
+    file_path = '/Users/YiHung/Downloads/TC_00017.JPG'
+    media_info = detector.get_media_info(file_path)
+    print(media_info)
 
-    if media_path.lower().endswith(('.png', '.jpg', '.jpeg')):
-        # Recognize the license plate in the image
-        recognized_img = detector.recognize_license_plate(media_path)
-        # Save the result as a single image
-        image_output_path = f"{output_path}.jpg"
+    if file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+        # Use the already loaded image
+        recognized_img = detector.recognize_license_plate(file_path)
+        image_output_path = './media/yolov8_car.jpg'
         cv2.imwrite(image_output_path, cv2.cvtColor(recognized_img, cv2.COLOR_RGB2BGR))
-        print(f"Annotated image saved to {image_output_path}")
-
-    elif media_path.lower().endswith(('.mp4', '.mov', '.avi')):
-        # Process the video
-        video_output_path = f"{output_path}.mp4"
-        detector.process_video(media_path, video_output_path)
-        print(f"Processed video saved to {video_output_path}")
-
+        print(f"Saved the image with the license plate to {image_output_path}")
+    elif file_path.lower().endswith(('.mp4', '.mov', '.avi')):
+        video_output_path = '/path/to/save/processed.mp4'
+        detector.process_video(file_path, video_output_path)
+        print(f"Saved the processed video to {video_output_path}")
     else:
         print("Unsupported media format")
