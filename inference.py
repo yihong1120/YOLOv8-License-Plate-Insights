@@ -325,14 +325,14 @@ if __name__ == '__main__':
     weights_path: str = 'models/best.pt'
     detector = CarLicensePlateDetector(weights_path)
 
-    file_path = '/Users/YiHung/Downloads/TC_00017.JPG'
+    file_path = 'medias/Scooter.JPG'
     media_info = detector.get_media_info(file_path)
     print(media_info)
 
     if file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         # Use the already loaded image
         recognized_img = detector.recognize_license_plate(file_path)
-        image_output_path = './media/yolov8_car.jpg'
+        image_output_path = './medias/yolov8_Scooter.jpg'
         cv2.imwrite(image_output_path, cv2.cvtColor(recognized_img, cv2.COLOR_RGB2BGR))
         print(f"Saved the image with the license plate to {image_output_path}")
     elif file_path.lower().endswith(('.mp4', '.mov', '.avi')):
