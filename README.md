@@ -45,13 +45,13 @@ To use this project, you'll need to install several dependencies and set up your
 
 To use this model for license plate detection and recognition, you need to have images of cars on which you want to perform the detection.
 
-1. Modify the `weights_path` in `CarLicensePlateDetector.py` to point to your YOLOv8 weights file:
+1. Modify the `weights_path` in `train.py` to point to your YOLOv8 weights file.  To train the model on Google Colab, you can utilise this [file](License_Plate_Detection.ipynb):
 
     ```python
-    weights_path = './path_to_your_weights/best.pt'
+    python train.py
     ```
 
-2. Run the license plate detection script:
+2. Run the license plate detection script.  To enable Vision AI api, you can refer to [Vision-API-Tutorial](manual/Vision-API-Tutorial.md):
 
     ```sh
     python inference.py
