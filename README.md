@@ -69,7 +69,8 @@ To use this model for license plate detection and recognition, you need to have 
 
 ## Custom Training
 
-For Linux of Mac user, you can simply execution the command below complete the holistic process.
+For Linux of Mac user, you can simply execute the command below complete the holistic process.
+
     ```sh
     bash demo.sh
     ```
