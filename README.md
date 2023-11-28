@@ -57,7 +57,10 @@ To use this model for license plate detection and recognition, you need to have 
     python inference.py
     ```
 
-3. Results will be displayed and can be saved as images with the recognised license plates highlighted, the following is the message returned after execution.
+3. Results will be displayed and can be saved as images with the recognised license plates highlighted, you can see the image output below.  The following is the message returned after execution.
+
+![Output](medias/Scooter.png)
+
     ```
     {'DateTime': '2023:11:17 19:01:29', 'GPSLatitude': 24.15218611111111, 'GPSLongitude': 120.67495555555556}
 
@@ -71,9 +74,7 @@ To use this model for license plate detection and recognition, you need to have 
 
 For Linux of Mac user, you can simply execute the command below complete the holistic process.
 
-    ```sh
     bash demo.sh
-    ```
 
 If you wish to train your own YOLOv8 model on custom license plate data, you'll need to follow these additional steps:
 
