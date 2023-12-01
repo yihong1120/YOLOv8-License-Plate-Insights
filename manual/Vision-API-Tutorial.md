@@ -1,3 +1,5 @@
+🇬🇧 [English](./Vision-API-Tutorial.md) | 🇹🇼 [繁體中文](./Vision-API-Tutorial-zh-tw.md)
+
 # Google Cloud Vision API Setup Tutorial
 
 This tutorial will guide you through setting up the Google Cloud Vision API.

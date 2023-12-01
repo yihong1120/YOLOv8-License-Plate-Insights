@@ -1,3 +1,5 @@
+🇬🇧 [English](./README.md) | 🇹🇼 [繁體中文](./README-zh-tw.md)
+
 # YOLOv8-License-Plate-Insights
 
 This repository demonstrates license plate recognition using the YOLOv8 object detection algorithm, showcasing the versatility of the YOLO architecture in real-world scenarios such as vehicle identification, traffic monitoring, and geospatial analysis. Additionally, the project integrates Google Cloud Platform (GCP) Vision AI for Optical Character Recognition (OCR), enabling accurate license plate identification while capturing crucial media capture data, including date, time, and geolocation. This metadata extraction enhances data understanding and supports applications like traffic analysis and location-based analytics.
