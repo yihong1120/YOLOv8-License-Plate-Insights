@@ -325,7 +325,7 @@ if __name__ == '__main__':
     weights_path: str = 'models/best.pt'
     detector = CarLicensePlateDetector(weights_path)
 
-    file_path = 'medias/Scooter.JPG'
+    file_path = 'medias/taiwan_taxi.jpg'
     media_info = detector.get_media_info(file_path)
     print(media_info)
 
