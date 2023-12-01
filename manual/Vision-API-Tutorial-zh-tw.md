@@ -18,7 +18,7 @@
 
 ## 步驟 2: 啟用 Vision API
 
-1. **開啟 API 圖書館**。
+1. **開啟 API library**。
    - 在 Cloud Console 中，前往 "API 以及服務" > "圖書館"。
 
 2. **搜尋 Vision API**。
