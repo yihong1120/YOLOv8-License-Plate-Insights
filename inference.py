@@ -64,7 +64,16 @@ class CarLicensePlateDetector:
             print(f"License: {recognized_text}")
             img = self.draw_text(img, recognized_text, (x1, y1 - 20))
 
-        return img
+        # Prepare info
+        image_info = self.get_image_info(img_path)
+        info = {
+            'DateTime': image_info.get('DateTime', None),
+            'GPSLatitude': image_info.get('GPSLatitude', None),
+            'GPSLongitude': image_info.get('GPSLongitude', None),
+            'License': recognized_text
+        }
+
+        return info, img
 
     @staticmethod
     def draw_text(img: np.ndarray, text: str, xy: Tuple[int, int], color: Tuple[int, int, int] = (0, 255, 0)) -> np.ndarray:
@@ -173,7 +182,7 @@ class CarLicensePlateDetector:
             ret, frame = cap.read()
             if ret:
                 # Process the frame
-                annotated_frame = self.recognize_license_plate(frame)
+                _, annotated_frame = self.recognize_license_plate(frame)
                 # Write the frame
                 out.write(cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR))
             else:
@@ -325,12 +334,12 @@ if __name__ == '__main__':
     detector = CarLicensePlateDetector(weights_path)
 
     file_path = 'medias/taiwan_taxi.jpg'
-    media_info = detector.get_media_info(file_path)
-    print(media_info)
+    info, _ = detector.recognize_license_plate(file_path)
+    print(info)
 
     if file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         # Use the already loaded image
-        recognized_img = detector.recognize_license_plate(file_path)
+        _, recognized_img = detector.recognize_license_plate(file_path)
         image_output_path = './medias/yolov8_Scooter.jpg'
         cv2.imwrite(image_output_path, cv2.cvtColor(recognized_img, cv2.COLOR_RGB2BGR))
         print(f"Saved the image with the license plate to {image_output_path}")
