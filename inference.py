@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple, Union, Dict, Any
 from google.cloud import vision
 from PIL.ExifTags import TAGS
-from typing import Tuple, List, Any
 import exifread
 from hachoir.parser import createParser
 from hachoir.metadata import extractMetadata
