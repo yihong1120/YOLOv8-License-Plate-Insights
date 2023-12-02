@@ -105,6 +105,10 @@ We conducted an experiment with the following parameters:
 
 3. `F1-Confidence Curve`: This curve represents the F1 score (a harmonic mean of precision and recall) across various confidence thresholds. The peak F1 score of 0.90 at a confidence threshold of 0.408 indicates that at this threshold, the model achieves a good balance between precision and recall.
 
+## In process
+
+The model shall be deployed in Google App Engine, serving as API.  We decided to utilise Flask to generate the API functionalities.  You can refer to this [file](./app.py)
+
 ## License
 
 This project is open-sourced under the MIT License. See the [LICENSE](./LICENSE) file for more information.
