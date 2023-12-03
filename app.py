@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
+from inference import CarLicensePlateDetector
 import os
 import tempfile
 import cv2

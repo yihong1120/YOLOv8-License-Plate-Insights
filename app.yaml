@@ -1,0 +1,13 @@
+runtime: python311  # 指定 Python 运行时版本
+
+entrypoint: gunicorn -b :$PORT app:app  # 指定 GAE 如何启动 Flask 应用
+
+# 您可以在这里添加其他配置，例如环境变量
+env_variables:
+  MODEL_PATH: 'models/best.pt'  # 假设模型文件位于此路径
+
+# 配置处理请求的路由
+handlers:
+- url: /.*
+  script: auto
+  secure: always  # 启用 HTTPS

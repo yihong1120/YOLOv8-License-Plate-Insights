@@ -26,7 +26,7 @@
 1. 將資料儲存庫複製到您的本地電腦：
 
     ```sh
-    git clone https://github.com/yihong1120/YOLOv8-License-Plate-Detection.git
+    git clone https://github.com/yihong1120/YOLOv8-License-Plate-Insights.git
     ```
 
 2. 下載[車牌數據集](https://1drv.ms/u/s!AiltJg0lR4P-ylzt6zyr3s3tEpij?e=r5E9ja)，原始數據集連接是[這裡](https://www.kaggle.com/datasets/andrewmvd/car-plate-detection?resource=download)。
@@ -53,7 +53,7 @@
     python train.py
     ```
 
-2. 執行車牌偵測脚本。需啟用 Vision AI api，您可以參考 [Vision-API-Tutorial](manual/Vision-API-Tutorial.md)：
+2. 執行車牌偵測脚本。需啟用 Vision AI api，您可以參考 [Vision-API-Tutorial](manual/Vision_API_Tutorial-zh-tw.md)：
 
     ```sh
     python inference.py
@@ -104,6 +104,14 @@
 2. `Precision-Recall Curve`: 此曲線用來評價物體偵測模型在不同閾值上的效能。高曲面下面積（AUC）為 0.928，這是極好的，表示模型能以高精度和召回率區分 'license' 類與所有其他類。
 
 3. `F1-Confidence Curve`: 此曲線顯示了在不同信心閾值下的 F1 分數（精准度和召回率的和諧平均數）。閾值在 0.408 的 F1 分數達到 0.90 的最高點，這表示在這個閾值下，模型達到了精准度和召回率的良好平衡。
+
+## 部署
+
+該模型將部署在Google App Engine（GAE）中，作為API。 我們決定利用 Flask 來產生 API 功能。 您可以參考[app.py](./app.py)並使用下列命令在本機執行API：
+
+    gunicorn app:app
+
+模型可以部署到GAE中，可以參考這個[手冊](./manual/Flask_GAE_Deployment_Tutorial-zh.tw.md)。
 
 ## 許可證
 

@@ -26,7 +26,7 @@ To use this project, you'll need to install several dependencies and set up your
 1. Clone the repository to your local machine:
 
     ```sh
-    git clone https://github.com/yihong1120/YOLOv8-License-Plate-Detection.git
+    git clone https://github.com/yihong1120/YOLOv8-License-Plate-Insights.git
     ```
 
 2. Download the [car license plate dataset](https://1drv.ms/u/s!AiltJg0lR4P-ylzt6zyr3s3tEpij?e=r5E9ja), the  original dataset link is [here](https://www.kaggle.com/datasets/andrewmvd/car-plate-detection?resource=download).
@@ -53,7 +53,7 @@ To use this model for license plate detection and recognition, you need to have 
     python train.py
     ```
 
-2. Run the license plate detection script.  To enable Vision AI api, you can refer to [Vision-API-Tutorial](manual/Vision-API-Tutorial.md):
+2. Run the license plate detection script.  To enable Vision AI api, you can refer to [Vision-API-Tutorial](manual/Vision_API_Tutorial.md):
 
     ```sh
     python inference.py
@@ -105,9 +105,13 @@ We conducted an experiment with the following parameters:
 
 3. `F1-Confidence Curve`: This curve represents the F1 score (a harmonic mean of precision and recall) across various confidence thresholds. The peak F1 score of 0.90 at a confidence threshold of 0.408 indicates that at this threshold, the model achieves a good balance between precision and recall.
 
-## In process
+## Deployment
 
-The model shall be deployed in Google App Engine, serving as API.  We decided to utilise Flask to generate the API functionalities.  You can refer to this [file](./app.py)
+The model shall be deployed in Google App Engine(GAE), serving as API.  We decided to utilise Flask to generate the API functionalities.  You can refer to [app.py](./app.py) and execute the API locally with the command below:
+
+    gunicorn app:app
+
+The model can be deployed to GAE, you can refer to this [manual](./manual/Flask_GAE_Deployment_Tutorial.md).
 
 ## License
 
