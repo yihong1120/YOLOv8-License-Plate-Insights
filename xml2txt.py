@@ -1,6 +1,6 @@
 import argparse
 import os
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from typing import Dict
 from tqdm import tqdm
 
@@ -17,7 +17,7 @@ class XMLToTXTConverter:
 
     def __init__(self, annotations_path: str, labels_path: str, classes: Dict[str, int]):
         """
-        Initializes the XMLToTXTConverter object with paths and class mappings.
+        Initialises the XMLToTXTConverter object with paths and class mappings.
 
         Args:
             annotations_path (str): Directory path where the XML annotation files are stored.
