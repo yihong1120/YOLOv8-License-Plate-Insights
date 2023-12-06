@@ -105,4 +105,4 @@ def process_video(file_path: str, filename: str) -> str:
     return send_file(video_output_path, attachment_filename='processed_' + filename)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
