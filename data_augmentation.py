@@ -31,25 +31,22 @@ class DataAugmentation:
         self.num_augmentations = num_augmentations
         # Define a sequence of augmentations
         self.seq = iaa.Sequential([
-                    iaa.Flipud(0.5), 
-                    iaa.Fliplr(0.5),  
-                    iaa.Affine(rotate=(-25, 25)),  
-                    iaa.Multiply((0.8, 1.2)),  
-                    iaa.LinearContrast((0.75, 1.5)), 
-                    iaa.AddToHueAndSaturation((-20, 20)), 
-                    iaa.GaussianBlur(sigma=(0, 0.5)),
-                    iaa.Grayscale(alpha=(0.0, 1.0)),
-                    iaa.Resize((0.5, 1.5)),
-                    iaa.Crop(px=(0, 16)),
-                    iaa.WithColorspace(to_colorspace="HSV", from_colorspace="RGB",
-                                    children=iaa.WithChannels(0, iaa.Add((10, 50)))),
-                    iaa.SaltAndPepper(0.05),
-                    iaa.ElasticTransformation(alpha=50, sigma=5),
-                    iaa.Superpixels(p_replace=0.5, n_segments=64),
-                    iaa.Sharpen(alpha=(0, 1.0), lightness=(0.75, 1.5)),
-                    iaa.PiecewiseAffine(scale=(0.01, 0.05))
-                    iaa.Affine(shear=(-25, 25))  # Add shear transformation
-                ], random_order=True)
+            iaa.Flipud(0.5), 
+            iaa.Fliplr(0.5),  
+            iaa.Affine(rotate=(-15, 15)),  # Adjust the range of rotation angles to -15 degrees to 15 degrees
+            iaa.Multiply((0.8, 1.2)),  # Adjust the range of brightness variation
+            iaa.LinearContrast((0.8, 1.2)),  # Adjust the range of contrast variation
+            iaa.GaussianBlur(sigma=(0, 0.5)),  # Adjust the strength of Gaussian blur
+            iaa.Resize((0.7, 1.3)),  # Adjust the range of random scaling
+            iaa.Crop(px=(0, 16)),  # Adjust the range of random cropping
+            iaa.SaltAndPepper(0.02),  # Adjust the strength of salt and pepper noise
+            iaa.ElasticTransformation(alpha=50, sigma=5),  # Adjust the strength of elastic transformation
+            iaa.ShearX((-20, 20)),  # Adjust the range of shear transformation for the x-axis
+            iaa.ShearY((-20, 20)),  # Adjust the range of shear transformation for the y-axis
+            iaa.Sharpen(alpha=(0, 0.5), lightness=(0.8, 1.2)),  # Adjust the strength of sharpening
+            iaa.PiecewiseAffine(scale=(0.01, 0.03)),  # Adjust the strength of piecewise affine transformation
+            iaa.Grayscale(alpha=(0.0, 1.0))  # Add random grayscale processing
+        ], random_order=True)
 
     def augment_data(self):
         """ Performs the augmentation on the dataset. """
