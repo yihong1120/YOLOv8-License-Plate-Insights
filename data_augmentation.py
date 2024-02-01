@@ -48,6 +48,7 @@ class DataAugmentation:
                     iaa.Superpixels(p_replace=0.5, n_segments=64),
                     iaa.Sharpen(alpha=(0, 1.0), lightness=(0.75, 1.5)),
                     iaa.PiecewiseAffine(scale=(0.01, 0.05))
+                    iaa.Affine(shear=(-25, 25))  # Add shear transformation
                 ], random_order=True)
 
     def augment_data(self):
